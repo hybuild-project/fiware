@@ -1,58 +1,22 @@
-version: "3.9" ##  for docker swarn
-
 services:
   mongo:
-    image: mongo # :4.4 ##  latest version is 5.0
+    image: mongo
     command: --nojournal
-    ####  OPTIONAL ###
-    hostname: mongo ##  for mongo-express; hostname = service name (default)
-    # ports:
-    #   - "27017:27017" # for external tools, e.g., an external mongo-express 
-    volumes:
-      - mongo-db:/data/db
-      - mongo-config:/data/configdb
-    healthcheck:
-      test: "mongo --quiet mongo/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1"
-    ##  original version:
-    #   test: |
-    #     host=`hostname --ip-address || echo '127.0.0.1'`; 
-    #     mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
-    #   interval: 5s
   
-  orion-ld:
-    image: fiware/orion-ld # :1.0.1 ##  latest stable version
-    hostname: fiware-orion
+  orion:
+    image: fiware/orion-ld
     depends_on:
       - mongo
     ports:
       - "1026:1026"
-    command: -dbhost mongo -db orionld # -logLevel DEBUG
-    ####  OPTIONAL ###
-    healthcheck:
-      test: curl --fail -s http://orion-ld:1026/version || exit 1
-    #   test: |
-    #     host=`hostname --ip-address || echo '127.0.0.1'`; 
-    #     curl --fail -s http://$host:1026/version || exit 1
-    #   interval: 10s
+    command: -dbhost mongo
 
-  ####  OPTIONAL ###
   node-red:
     image: nodered/node-red
-    depends_on:
-      - orion-ld
     ports:
       - "1880:1880"
-    volumes:
-      - node-red-data:/data
 
   mongo-express:
     image: mongo-express
-    depends_on:
-      - mongo
     ports:
       - "8081:8081"
-
-volumes:
-  mongo-config:
-  mongo-db:
-  node-red-data:
