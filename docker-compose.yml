@@ -36,6 +36,15 @@ services:
     #   interval: 10s
 
   ####  OPTIONAL ###
+  node-red:
+    image: nodered/node-red
+    depends_on:
+      - orion-ld
+    ports:
+      - "1026:1026"
+    volumes:
+      - node-red-data:/data
+
   mongo-express:
     image: mongo-express
     depends_on:
@@ -46,3 +55,4 @@ services:
 volumes:
   mongo-config:
   mongo-db:
+  node-red-data:
