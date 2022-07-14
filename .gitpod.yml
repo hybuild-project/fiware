@@ -4,9 +4,9 @@ tasks:
       ETHEREUM_PUBLIC_KEY: 0406c16dffbd03799962604dac8056a0615fd0586c1a1df8c09c05bedd41acec25ab9756c6bc577d0804d4244ed08d86a5bd3fb83991fc67ca13c096a8b8f040e9
       GITHUB_TOKEN: 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
     command: |
-      docker-compose up -d --build
+      docker compose up -d
       docker ps
-      docker exec fiware-orion curl http://localhost:1026/version
+      docker exec fiware-orion-ld-1 curl http://localhost:1026/version
 ports:
   - port: 1026
     onOpen: ignore
